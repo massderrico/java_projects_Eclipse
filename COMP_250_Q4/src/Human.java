@@ -1,0 +1,4 @@
+
+interface Human {
+	void think();
+}

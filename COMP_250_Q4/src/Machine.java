@@ -1,0 +1,4 @@
+
+interface Machine {
+	void move();
+}
