@@ -1,1 +1,1 @@
-This folder contains random snippets of code and solution to small coding questions
+This folder contains random snippets of code for testing and mini problems
