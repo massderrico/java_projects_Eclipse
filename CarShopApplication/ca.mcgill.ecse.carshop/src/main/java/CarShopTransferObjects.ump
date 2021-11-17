@@ -1,0 +1,56 @@
+namespace ca.mcgill.ecse.carshop.controller;
+
+class ToService {
+   name;
+   garage;
+   Integer duration;
+}
+
+class BusinessHourTO{
+enum DayOfWeek {Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday }
+  dayOfWeek;
+  startTime;
+  endTime;
+}
+class ToUser {
+	username;
+}
+class ToAppointment {
+	customer;
+	startTime;
+	day;
+	bookingName;
+	
+}
+
+class ToBusinessHour {
+   day;
+   start;
+   end;
+}
+
+class ToTimeSlot {
+   type;
+   startD;
+   startT;
+   endD;
+   endT;
+}
+
+class ToBusiness{
+	name;
+	address;
+	phoneNumber;
+	email;
+}
+
+class ToServiceCombo{
+	[]mandatory;
+	[]services;
+	mainService;
+}
+class ToBookableService{
+	name;
+	service;
+	mandatory;
+}

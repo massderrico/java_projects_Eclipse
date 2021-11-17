@@ -1,0 +1,134 @@
+// Sample Constraints:
+
+// assumption: dateTime(Date, Time) returns a complete DateTime object
+
+// checks whether there is no overlap between two time slots
+isNoOverlap(TimeSlot t1, TimeSlot t2) : Boolean = (t1 <> t2) implies 
+  [dateTime(t1.endDate, t1.endTime).isBefore(dateTime(t2.startDate, t2.startTime)) or 
+  dateTime(t2.endDate, t2.endTime).isBefore(dateTime(t1.startDate, t1.startTime))]
+
+for each CarShop:
+   // a time slot is used for only one of appointment, vacation, holidays at a time
+   (intersection of [sb.timeSlot for sb in app.serviceBookings for app in appointments] and business.vacation) is empty
+   (intersection of [sb.timeSlot for sb in app.serviceBookings for app in appointments] and business.holidays) is empty
+   (intersection of business.vacation and business.holidays) is empty
+
+   // appointments can only be made if a business exists
+   (appointments is not empty) implies business <> null
+
+   // exactly one type of each technician exists
+   for t1, t2 in technicians it is true that
+      t1 <> t2 implies t1.type <> t2.type
+
+for each Appointment:
+	// appointment cannot be made on holidays or during vacation
+	forAll sb in serviceBookings it is true that
+		forAll t in (union of carShop.business.vacations and carShop.business.holidays) is is true that
+			isNoOverlap(sb.timeSlot, t)
+			
+	// if the service is chosen, there is exactly one serviceBooking with the service
+	(bookableService is of kind Service) implies 
+      serviceBookings.size() = 1 and serviceBookings[0].service == bookableService
+
+  	// if the combo is chosen
+	(bookableService is of kind ServiceCombo) implies 
+      // the serviceBooking must includes only the services in the combo
+      (for each sb in serviceBookings it is true that
+          [s.service for s in bookableService.services] contains sb.service)
+      and 
+      // mandatory service must be chosen
+      (for item in bookableService.services) it is true that item.mandatory implies 
+         [sb.service for sb in serviceBookings] contains item.service)
+      and 
+      // time slots are in temporal order
+      (for (i in range(0, serviceBookings.size() - 1)) it is true that 
+         serviceBooking[i - 1].timeSlot.isBefore(serviceBooking[i].timeSlot))
+      // the order of the service bookings must be the same as the order of the services in the combo
+      // assumption: list.isAfter(i1, i2) checks if the index of i1 is larger than i2 in the list
+      (for item1, item2 in bookableService.services 
+         (bookableService.services.isAfter(item1, item2) and 
+         [sb.service for sb in serviceBookings].contains(item1.service) and
+         [sb.service for sb in serviceBookings].contains(item2.service)) implies
+         [sb.service for sb in serviceBookings].isAfter(item1.service, item2.service)
+      )
+	
+for each ServiceBooking:
+   // bookings cannot be made on holidays or during vacation
+   forAll t in (union of carShop.business.vacations and carShop.business.holidays) is is true that
+      isNoOverlap(timeSlot, t)
+
+   // bookings has to be made within business hours of the garage
+   // assumption: a method DayOfWeek Date.getDayOfWeek() exists 
+   // assumption: timeSlot.isWithin(start, end) checks if the timeSlot is within the start and end period inclusively 
+   exists bh in service.garage.businessHours(timeSlot.startDate.getDayOfWeek()) such that
+      timeSlot.isWithin(bh.startTime, bh.endTime)
+
+   // length of the booking is the same as the length of the service
+   // assumption: timeSlot.length() calculates the lengths of the time slot in minutes
+   timeSlot.length() == service.duration
+
+for each Technician:
+   // a garage exists
+   garage != null
+
+   // username of the technician
+   username = type.toString() + "-Technician"
+
+for each Garage:
+   // service booking time slot does not overlap
+   for sb1, sb2 in union([service.serviceBookings for service in services]) it is true that
+      sb1 <> sb2 implies isNoOverlap(sb1, sb2)
+
+   // business hours do not overlap
+   forAll b1, b2 in businessHours it is true that 
+      (b1 <> b2 and b1.dayOfWeek = b2.dayOfWeek) implies 
+      (b1.endTime.isBefore(b2.startTime) or b2.endTime.isBefore(b1.startTime))
+   
+   // business hours are within the shop business hour
+   forAll b1 in businessHours it is true that
+      exists b2 carShop.business.businessHours such that
+         (b1.dayOfWeek = b2.dayOfWeek) and 
+         (b2.startTime.isBeforeOrSame(b1.startTime) and b1.endTime.isBeforeOrSame(b2.endTime))
+
+// unique User.username already captured by unique keyword in Umple
+for each Owner:
+   // the username of the owner account is always owner
+   username = "owner"
+
+for each Business:
+   // finds the business hour for a given day of the week
+   getBusinessHoursFor(DayOfWeek dow) : List<BusinessHour> = 
+      select bh in businessHours such that bh.dayOfWeek = dow
+
+   // business hours do not overlap
+   forAll b1, b2 in businessHours it is true that 
+      (b1 <> b2 and b1.dayOfWeek = b2.dayOfWeek) implies 
+      (b1.endTime.isBefore(b2.startTime) or b2.endTime.isBefore(b1.startTime))
+
+   // vacations and holidays do not overlap
+   forAll t1, t2 in (union of vacations and holidays) it is true that 
+     (t1 <> t2) implies 
+     (dateTime(t1.endDate, t1.endTime).isBefore(dateTime(t2.startDate, t2.startTime)) or 
+     dateTime(t2.endDate, t2.endTime).isBefore(dateTime(t1.startDate, t1.startTime)))
+
+for each BusinessHour:
+   // start of business hour is before end of business hour
+   startTime.isBefore(endTime)
+
+for each TimeSlot:
+   // start of a time slot is before the end of a time slot
+   dateTime(startDate, startTime).isBefore(dateTime(endDate, endTime))
+
+// unique BookableService.name already captured by unique keyword in Umple
+for each Service:
+   // duration has to be greater than zero
+   duration > 0
+
+for each ServiceCombo:
+   // the mainService is always mandatory
+   // (note: there may be other services in the service combo that are mandatory)
+   mainService.mandatory = true
+
+   // the following could be modeled with {subsets} in the domain model,
+   // but Umple does not support this keyword
+   services includes mainService

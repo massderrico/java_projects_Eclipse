@@ -1,0 +1,106 @@
+
+class Appointment {
+  appointmentStatus {
+    
+    Booked {
+      // what the customer can do once the appointment is created
+      // only for updateAppointment, there should be several with guards based on what the customer is trying to change (I think)
+      updateAppointmentTime() / {
+      doUpdateAppointment();
+      } -> Booked;
+      
+      updateAppointmentService() / {
+      doUpdateAppointment();
+      } -> Booked;
+      
+      cancelAppointment() / {
+      doCancelAppointment();
+      } -> Final;
+      
+      // what the owner can do once the appointment is created
+      startAppointment() / {
+      doStartAppointment();
+      } -> InProgress;
+      
+      noShow() / {
+      doNoShow();
+      } -> Final;
+      
+      endAppointment() / {
+      rejectEndAppointment();
+      } -> Booked;
+      
+    }
+    
+    InProgress {
+      // what the customer can do once the appointment is in progress
+      // only for updateAppointment, there should be several with guards based on what the customer is trying to change (I think)
+      updateAppointmentService() / {
+      doUpdateAppointment();
+      } -> InProgress;
+      
+      cancelAppointment() / {
+      rejectCancelAppointment();
+      } -> InProgress;
+      
+      // what the owner can do once the appointment is in progress
+      endAppointment() / {
+      doEndAppointment();
+      } -> Final;
+      
+      startAppointment() / {
+      rejectStartAppointment();
+      } -> InProgress;
+      
+      noShow() / {
+      rejectNoShow();
+      } -> InProgress;
+    }
+    
+    
+         
+  }
+  
+  	public void doStartAppointment() {
+	   System.out.println("Appointment started!");
+   	}
+   	
+  	public void rejectStartAppointment() {
+  		throw new RuntimeException("Owner cannot start appointment while it is in progress.");
+  	}
+  	
+  	public void doEndAppointment() {
+		System.out.println("Appointment ended!");
+	}
+	
+  	public void rejectEndAppointment() {
+  		throw new RuntimeException("Owner cannot end an appointment that hasn't begun.");
+  	}    
+
+	public void doNoShow() {
+		this.customer.setNoShows(this.customer.getNoShows() + 1);
+	}
+	
+	public void rejectNoShow() {
+		throw new RuntimeException("Owner cannot noShow an appointment that hasn't begun.");
+	}
+	
+	public void doCancelAppointment() {
+		System.out.println("Appointment Cancelled!");
+	}
+	
+	public void rejectCancelAppointment() {
+		throw new RuntimeException("Appointment cannot be cancelled on the day of.");
+	}
+	
+	// placeholder method
+	public void doUpdateAppointment() {
+		System.out.println("Appointment parameters updated!");
+	}
+	
+	public void rejectUpdateAppointment() {
+		System.out.println("Appointment cannot be updated in this way because appointment is in progress.");
+	}
+  
+ }
+ 

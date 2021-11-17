@@ -1,1 +1,3 @@
-# java_projects_Eclipse
+# Java Projects
+
+This repository constains all my Java coding projects/assigments 

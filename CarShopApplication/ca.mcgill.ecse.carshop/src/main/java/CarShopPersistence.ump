@@ -1,0 +1,91 @@
+external interface Serializable {}
+
+class CarShop  {
+    depend java.io.Serializable;
+    isA Serializable;
+    private static final long serialVersionUID = -3062059649216520626L;                                              
+}
+
+class User {
+    depend java.io.Serializable;
+    isA Serializable;
+    private static final long serialVersionUID = -2683593616927798071L;
+}
+
+
+class Owner {
+    depend java.io.Serializable;
+    isA Serializable;
+}
+
+class Customer {
+    depend java.io.Serializable;
+    isA Serializable;
+    private static final long serialVersionUID = -4462380646264191750L;
+}
+
+class Technician {
+    depend java.io.Serializable;
+    isA Serializable;
+    private static final long serialVersionUID = -3752343846520653192L;
+}
+
+class Business {
+    depend java.io.Serializable;
+    isA Serializable;
+    private static final long serialVersionUID = -1225451297764744987L;
+}
+
+class BusinessHour {
+    depend java.io.Serializable;
+    isA Serializable;
+    private static final long serialVersionUID = -8318847120022362253L;
+}
+
+class TimeSlot {
+    depend java.io.Serializable;
+    isA Serializable;
+    private static final long serialVersionUID = -1337788884714281091L;
+}
+
+class Garage {
+    depend java.io.Serializable;
+    isA Serializable;
+    private static final long serialVersionUID = -2125693749618619058L;
+}
+
+class BookableService {
+    depend java.io.Serializable;
+    isA Serializable;
+}
+
+class Service {
+    depend java.io.Serializable;
+    isA Serializable;
+    private static final long serialVersionUID = -4213806806606942940L;
+}
+
+class ServiceCombo {
+    depend java.io.Serializable;
+    isA Serializable;
+    private static final long serialVersionUID = -6755282225277470891L;
+}
+
+class ComboItem {
+    depend java.io.Serializable;
+    isA Serializable;
+    private static final long serialVersionUID = -6516986054047176596L;
+}
+
+
+class Appointment {
+    depend java.io.Serializable;
+    isA Serializable;
+    private static final long serialVersionUID = -4992974903395517989L;
+}
+
+class ServiceBooking {
+    depend java.io.Serializable;
+    isA Serializable;
+    private static final long serialVersionUID = -4106409689324511025L;
+}
