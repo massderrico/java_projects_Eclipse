@@ -1,9 +1,50 @@
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 // add your imports here
 
 class TSTIterator<T extends Comparable<T>> implements Iterator<T> {
     // TODO: implement the iterator class here
     // add your own helper methods if necessary
+	
+	private int index = 0;
+	private LinkedList<T> result = new LinkedList<T>(); 
+	
+    public TSTIterator(TSTNode<T> rootN) {
+    	inOrder(rootN);
+    	
+	}
+    
+    
+    public void inOrder(TSTNode<T> rootN)
+    {
+    	if(rootN ==null) {
+    		return;
+    	}
+    	//if(rootN != null && rootN.left == null && rootN.right == null && rootN.mid == null ) {
+    		//	result.add(rootN.element);
+    		//}
+    		if (rootN.left != null) {
+    	        inOrder(rootN.left);
+    	    }
+    	    if (rootN.mid != null) {
+    	        inOrder(rootN.mid);
+    	    }
+    	    result.add(rootN.element);
+    	    if (rootN.right != null) {
+    	        inOrder(rootN.right);
+    	    }
+    	    
+
+    	    
+    	}
+
+    
+    
+    
+    
     
     /**
      * Returns {@code true} if the iteration has more elements. (In other words, returns {@code true} if {@link #next}
@@ -13,7 +54,10 @@ class TSTIterator<T extends Comparable<T>> implements Iterator<T> {
      */
     @Override
     public boolean hasNext() {
-        return false;
+        if (index < result.size()){
+        	return true;
+        }
+    	return false;
     }
 
     /**
@@ -26,6 +70,8 @@ class TSTIterator<T extends Comparable<T>> implements Iterator<T> {
      */
     @Override
     public T next() {
-        return null;
+       T e = result.get(index);
+       index += 1;
+       return e;
     }
 }

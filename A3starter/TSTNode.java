@@ -9,20 +9,64 @@ class TSTNode<T extends Comparable<T>>{
     // TODO: implement the node class here
     
     TSTNode(T element){
-
+    	this.element = (T)element;	
     }
+    
+  
 
     TSTNode<T> findMax(){
-        return null;
+    	TSTNode<T> returnNode = this;
+    	
+    	if(returnNode.element == null) {
+    		return null;
+    	}
+    	else {
+    		while (returnNode.right!=null) {
+    			returnNode = returnNode.right;
+    		}
+    		
+    	}
+
+        return returnNode;
     }
 
     TSTNode<T> findMin(){
-        return null;
+    	TSTNode<T> returnNode = this;
+    	
+    	if(returnNode.element == null) {
+    		return null;
+    	}
+    	else {
+    		while (returnNode.left!=null) {
+    			returnNode = returnNode.left;
+    		}
+    		
+    	}
+
+        return returnNode;
     }
 
+    
     int height(){
-        return -1;
+    	return getHeight(this);
     }
+    
+    private int getHeight(TSTNode<T> rootN) { //
+       
+
+        if (rootN == null) {
+            return -1;
+        } 
+        else{
+        	int maxLeft = getHeight(rootN.left);
+        	int maxMid = getHeight(rootN.mid);
+        	int maxRight = getHeight(rootN.right);
+        	return 1 + Math.max(Math.max(maxLeft, maxMid),maxRight);
+        }
+
+        
+    }
+    
 
     // add your own helper methods if necessary
 }
